@@ -125,6 +125,20 @@ var tests = []struct {
 		expectedOut: `test/buildtags/buildtags_expected_nostrip.go`,
 		tag:         "",
 	},
+	{
+		filename:    "struct_ignore.go",
+		in:          `test/structignore/struct_ignore.go`,
+		types:       []map[string]string{{"_t_": "MyThing"}},
+		expectedOut: `test/structignore/struct_ignore_expected.go`,
+		tag:         "",
+	},
+	{
+		filename:    "struct_ignore.go",
+		in:          `test/structignoredeep/struct_ignore.go`,
+		types:       []map[string]string{{"_t_": "MyThing"}},
+		expectedOut: `test/structignoredeep/struct_ignore_expected.go`,
+		tag:         "",
+	},
 }
 
 func TestParse(t *testing.T) {
@@ -144,10 +158,13 @@ func TestParse(t *testing.T) {
 			assert.IsType(t, test.expectedErr, err, "(%s) Generate should return object of type %v", test.filename, test.expectedErr)
 		}
 
+		expected := strings.Replace(test.expectedOut, "\r", "", -1)
+		res := strings.Replace(string(bytes), "\r", "", -1)
+
 		// assert the response
-		if !assert.Equal(t, string(bytes), test.expectedOut, "Parse didn't generate the expected output.") {
-			log.Println("EXPECTED: " + test.expectedOut)
-			log.Println("ACTUAL: " + string(bytes))
+		if !assert.Equal(t, res, expected, "Parse didn't generate the expected output.") {
+			log.Println("EXPECTED: " + expected)
+			log.Println("ACTUAL: " + res)
 		}
 
 	}

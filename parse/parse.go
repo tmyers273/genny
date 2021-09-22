@@ -131,9 +131,17 @@ func generateSpecific(filename string, in io.ReadSeeker, typeSet map[string]stri
 
 	comment := ""
 	scanner := bufio.NewScanner(in)
+	bracketDepth := 0
+	ignoreNextStruct := false
 	for scanner.Scan() {
 
 		line := scanner.Text()
+
+		if bracketDepth > 0 {
+			bracketDepth -= strings.Count(line, "}")
+			line = ""
+			continue
+		}
 
 		// does this line contain generic.Type?
 		if strings.Contains(line, genericType) || strings.Contains(line, genericNumber) {
@@ -143,6 +151,14 @@ func generateSpecific(filename string, in io.ReadSeeker, typeSet map[string]stri
 
 		for t, specificType := range typeSet {
 			if strings.Contains(line, t) {
+				if ignoreNextStruct && strings.Contains(line, "struct") {
+					bracketDepth = strings.Count(line, "{")
+					bracketDepth -= strings.Count(line, "}")
+					line = ""
+					ignoreNextStruct = false
+					continue
+				}
+
 				newLine := subTypeIntoLine(line, t, specificType)
 				line = newLine
 			}
@@ -158,6 +174,10 @@ func generateSpecific(filename string, in io.ReadSeeker, typeSet map[string]stri
 		if strings.HasPrefix(line, "//") {
 			// record this line to print later
 			comment = line
+			if comment == "// genny ignore struct" {
+				ignoreNextStruct = true
+				comment = ""
+			}
 			continue
 		}
 
