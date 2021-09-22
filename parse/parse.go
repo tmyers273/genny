@@ -151,7 +151,7 @@ func generateSpecific(filename string, in io.ReadSeeker, typeSet map[string]stri
 
 		for t, specificType := range typeSet {
 			if strings.Contains(line, t) {
-				if ignoreNext && (strings.Contains(line, "func") || strings.Contains(line, "struct")) {
+				if ignoreNext && (strings.Contains(line, "func") || strings.Contains(line, "type")) {
 					bracketDepth = strings.Count(line, "{")
 					bracketDepth -= strings.Count(line, "}")
 					line = ""

@@ -143,6 +143,12 @@ var tests = []struct {
 		types:       []map[string]string{{"_t_": "MyThing"}},
 		expectedOut: `test/funcignore/func_ignore_expected.go`,
 		tag:         "",
+	},{
+		filename:    "structignore_oneliner.go",
+		in:          `test/structignore_oneliner/struct_ignore.go`,
+		types:       []map[string]string{{"_t_": "MyThing"}},
+		expectedOut: `test/structignore_oneliner/struct_ignore_expected.go`,
+		tag:         "",
 	},
 }
 
