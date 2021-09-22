@@ -132,7 +132,7 @@ func generateSpecific(filename string, in io.ReadSeeker, typeSet map[string]stri
 	comment := ""
 	scanner := bufio.NewScanner(in)
 	bracketDepth := 0
-	ignoreNextStruct := false
+	ignoreNext := false
 	for scanner.Scan() {
 
 		line := scanner.Text()
@@ -151,11 +151,11 @@ func generateSpecific(filename string, in io.ReadSeeker, typeSet map[string]stri
 
 		for t, specificType := range typeSet {
 			if strings.Contains(line, t) {
-				if ignoreNextStruct && strings.Contains(line, "struct") {
+				if ignoreNext && (strings.Contains(line, "func") || strings.Contains(line, "struct")) {
 					bracketDepth = strings.Count(line, "{")
 					bracketDepth -= strings.Count(line, "}")
 					line = ""
-					ignoreNextStruct = false
+					ignoreNext = false
 					continue
 				}
 
@@ -174,8 +174,8 @@ func generateSpecific(filename string, in io.ReadSeeker, typeSet map[string]stri
 		if strings.HasPrefix(line, "//") {
 			// record this line to print later
 			comment = line
-			if comment == "// genny ignore struct" {
-				ignoreNextStruct = true
+			if comment == "// genny ignore" {
+				ignoreNext = true
 				comment = ""
 			}
 			continue

@@ -131,12 +131,17 @@ var tests = []struct {
 		types:       []map[string]string{{"_t_": "MyThing"}},
 		expectedOut: `test/structignore/struct_ignore_expected.go`,
 		tag:         "",
-	},
-	{
+	}, {
 		filename:    "struct_ignore.go",
 		in:          `test/structignoredeep/struct_ignore.go`,
 		types:       []map[string]string{{"_t_": "MyThing"}},
 		expectedOut: `test/structignoredeep/struct_ignore_expected.go`,
+		tag:         "",
+	},{
+		filename:    "func_ignore.go",
+		in:          `test/funcignore/func_ignore.go`,
+		types:       []map[string]string{{"_t_": "MyThing"}},
+		expectedOut: `test/funcignore/func_ignore_expected.go`,
 		tag:         "",
 	},
 }
